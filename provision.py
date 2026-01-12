@@ -27,7 +27,7 @@ DESIRED = 2
 KEY_NAME = None  # e.g. "my-ec2-key" or None
 INSTANCE_PROFILE_NAME = None  # e.g. "my-ec2-instance-profile" or None
 
-USER_DATA = None 
+USER_DATA = None
 
 
 # =========================
@@ -139,7 +139,7 @@ def create_ec2_sg(vpc_id: str):
             "IpProtocol": "tcp",
             "FromPort": 443,
             "ToPort": 443,
-            "IpRanges": [{"CidrIp": VPC_CIDR}],
+            "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
         }]
     )
 
@@ -156,7 +156,9 @@ def create_target_group(vpc_id: str):
         Port=443,
         VpcId=vpc_id,
         TargetType="instance",
-        HealthCheckProtocol="TCP",
+        HealthCheckProtocol="HTTPS",
+        HealthCheckPort="443",
+        HealthCheckPath="/",
         Tags=[
             {"Key": "stack", "Value": NAME},
             {"Key": "Name", "Value": tg_name},
